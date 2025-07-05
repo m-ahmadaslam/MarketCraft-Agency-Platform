@@ -47,7 +47,7 @@ const Footer = () => {
               <li className="flex items-start">
                 <span className="mr-3 mt-1 text-[#FF6F61]">📍</span>
                 <a
-                  href="https://maps.app.goo.gl/62zM2HvC7b3xbMBD9?g_st=iw"
+                  href="https://maps.app.goo.gl/62zM2HvC7b3xbMBD9?g_st=iw"          
                   target="_blank"
                   rel="noopener noreferrer"
                   className="hover:underline text-blue-600"
@@ -65,7 +65,7 @@ const Footer = () => {
 
               <li className="flex items-start">
                 <span className="mr-3 mt-1 text-[#FF6F61]">✉️</span>
-                <a href="mailto:contact@hygieia.com" className="hover:text-[#4A90E2] transition-colors">
+                <a href="mailto:info@marketcraft.com" className="hover:text-[#4A90E2] transition-colors">
                   info@marketcraft.com
                 </a>
               </li>
