@@ -83,14 +83,6 @@ npm run dev
 ```
 Open `http://localhost:3000`.
 
-## Known Issues
-
-These are things I found in the code that you should be aware of before this is treated as production-ready, rather than things I'm guessing at:
-
-1. **Newsletter signup is broken** — posts to `/subscribe-newsletter`, which has no corresponding route in this repo (see Tech Stack).
-2. **Stray, unrelated files are committed**: `psges` (an empty, 0-byte file at the repo root) and `public/Student Slips.pdf.crdownload` (a 540 KB incomplete browser download of an unrelated PDF named "Student Slips"). Neither is referenced by any code.
-3. **Unused dependencies** listed in `package.json` (`groq-sdk`, `express`, `cors`, `body-parser`, `react-hook-form`, `zod`) — see Tech Stack for detail.
-4. No `LICENSE` file, no test files, and no CI configuration exist anywhere in this repo.
 
 ## Deployment
 
