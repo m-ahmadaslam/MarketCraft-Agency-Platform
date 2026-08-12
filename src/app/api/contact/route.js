@@ -1,12 +1,10 @@
-// pages/api/contact.js
-import { connectToDB } from "../../src/lib2/mongodb";
-import Contact from "../../src/models/contact";
+import { NextResponse } from "next/server";
+import { connectToDB } from "@/lib2/mongodb";
+import Contact from "@/models/contact";
 import nodemailer from "nodemailer";
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end("Method not allowed");
-
-  const { name, phone, email, message } = req.body;
+export async function POST(req) {
+  const { name, phone, email, message } = await req.json();
 
   try {
     await connectToDB();
@@ -36,10 +34,9 @@ export default async function handler(req, res) {
       `,
     });
 
-    res.status(200).json({ success: true });
+    return NextResponse.json({ success: true });
   } catch (err) {
-  console.error("Mongo/Email Error:", err); // ← Detailed log
-  res.status(500).json({ error: err.message || "Server error" });
-}
-
+    console.error("Mongo/Email Error:", err);
+    return NextResponse.json({ error: err.message || "Server error" }, { status: 500 });
+  }
 }
