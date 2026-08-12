@@ -8,37 +8,27 @@ const timelineItems = [
   {
     era: "Social Media Marketing (SMM)",
     icon: <ThumbsUp className="w-8 h-8" />,
-    title: "Hygieia Goddess",
     description: "Create engaging social media presence across platforms like Instagram, Facebook, and TikTok",
-    
   },
   {
     era: "Search Engine Optimization (SEO & SEM)",
     icon: <Search className="w-8 h-8" />,
-    title: "Middle Ages",
     description: "Boost your website's visibility with SEO strategies that drive organic traffic",
-    
   },
   {
     era: "Website Development",
     icon:  <Code className="w-8 h-8" />,
-    title: "Modern Medicine",
     description: "Custom Word Press, Shopify & coded sites that blend design with perfromance",
-  
   },
   {
     era: "Content Creation",
     icon: <Video className="w-8 h-8" />,
-    title: "Digital Health",
     description: "Craft visually compelling reels,posts,carsouls and branded videos that convert",
-    
   },
   {
     era: "Paid Advertisement",
     icon: <Rocket className="w-8 h-8" />,
-    title: "Hygieia AI",
     description: "META, GOOGLE & TIKTOK Ads that reach your target audience with precision",
-    
   },
 ]
 

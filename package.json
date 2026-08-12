@@ -1,5 +1,5 @@
 {
-  "name": "hygieia-frontend",
+  "name": "marketcraft-agency-platform",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -34,7 +34,6 @@
     "express": "^5.1.0",
     "framer-motion": "^12.9.2",
     "groq-sdk": "^0.20.1",
-    "hygieia-frontend": "file:",
     "lucide-react": "^0.503.0",
     "mongodb": "^6.17.0",
     "mongoose": "^8.16.0",

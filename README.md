@@ -2,8 +2,6 @@
 
 A Next.js marketing website for **Market Craft**, a marketing agency, with a landing page, a working contact form backed by MongoDB + email, a client-side interactive "Marketing Score" quiz, and a static blog. The page `<title>` is literally set to `"Market Craft"` in `src/app/layout.tsx`.
 
-> ⚠️ This repository also contains a second, unrelated, non-functional application (a healthcare "role selection" / patient signup flow with Google OAuth) mixed into the same codebase. It doesn't connect to anything else here and appears to be leftover boilerplate — see **Known Issues** below before assuming it's a real feature.
-
 ## Overview
 
 Everything routes through Next.js 15 (App Router, `src/app/`), styled with Tailwind CSS + shadcn/ui (`src/components/ui/`). The one page that actually does something server-side is the landing page's contact form, which hits a legacy Next.js **Pages Router** API route (`pages/api/contact.js`) that writes to MongoDB and sends an email via Nodemailer. Everything else — the marketing quiz, testimonials, client showcase — is static content or client-only interactivity with no backend.
@@ -21,6 +19,8 @@ Everything routes through Next.js 15 (App Router, `src/app/`), styled with Tailw
 - **Blog list at `/blogpage`** — renders only the newsletter-subscribe box. The actual "Latest Marketing Insights" card grid that would list the 3 blog posts is present in `blog-newsletter.tsx` but entirely commented out, so `/blogpage` currently shows no way to browse to the blog posts from the UI (the `[slug]` URLs still work if you know them or reach them from elsewhere).
 - **Newsletter subscribe form** — submits to `POST /subscribe-newsletter` via the shared axios client, but no such API route exists anywhere in this repo (only `/api/contact` exists). Every newsletter signup attempt will fail against a real deployment unless there's an external service at that path that isn't part of this codebase.
 
+**Removed since the last audit:** this repo previously contained an unrelated, non-functional healthcare app (a "role selection" page for Doctor/Nutritionist/Lab Technician/Admin/Pharmacist, a patient signup form, and a Google OAuth callback pointing at a backend that didn't exist in this repo), plus a `package.json` literally named `"hygieia-frontend"` with a broken self-referential dependency, and dead "Hygieia"-themed placeholder text sitting in an unused field of the services timeline. None of it was reachable from the actual site (nothing in the navbar/footer linked to it), so it's been deleted rather than reworked. `package.json`'s `name` is now `marketcraft-agency-platform`.
+
 ## Tech Stack
 
 ### Frontend
@@ -29,7 +29,7 @@ Everything routes through Next.js 15 (App Router, `src/app/`), styled with Tailw
 - **Framer Motion** — scroll/entrance animations across nearly every landing-page component (confirmed imports in `hero-section.tsx`, `navbar.tsx`, `mission-stats.tsx`, `services.tsx`, `ourclients.tsx`, `marketing-score-quiz.tsx`, `blogpage/[slug]/page.tsx`, and more)
 - **canvas-confetti** — `marketing-score-quiz.tsx` only
 - **react-intersection-observer** — `ourclients.tsx`, to trigger the entrance animation when the section scrolls into view
-- **axios** — a single shared client (`src/lib/axios.ts`) pointed at `process.env.BASE_URL || 'http://localhost:4000/api'`, used by the newsletter form and the (non-functional, see below) signup page
+- **axios** — a single shared client (`src/lib/axios.ts`) pointed at `process.env.BASE_URL || 'http://localhost:4000/api'`, used by the (currently broken, see Key Features) newsletter form
 
 ### Backend
 - **Next.js API route** (`pages/api/contact.js`, Pages Router — note this coexists with the App Router used for everything else) — the only real backend endpoint in this repo
@@ -40,10 +40,8 @@ Everything routes through Next.js 15 (App Router, `src/app/`), styled with Tailw
 Verified by grepping every `.ts`/`.tsx`/`.js` file for imports — none of these appear outside `node_modules` or `package.json`:
 - `groq-sdk` — no import anywhere; there is no AI/LLM feature in this codebase despite this dependency being present
 - `express`, `cors`, `body-parser` — no custom server file exists; the app runs entirely on Next.js's built-in server
-- `react-hook-form`, `zod` — only referenced inside the unused shadcn `form.tsx` UI primitive; the actual contact and signup forms use plain `useState`, not this stack
+- `react-hook-form`, `zod` — only referenced inside the unused shadcn `form.tsx` UI primitive; the actual contact form uses plain `useState`, not this stack
 - `mongodb` (the raw driver, as opposed to `mongoose`) — `mongoose` is what's actually imported everywhere data touches MongoDB
-
-Also worth noting: `package.json`'s `name` field is `"hygieia-frontend"`, and it lists a self-referential dependency `"hygieia-frontend": "file:"`. Neither is used by anything in this repo — both look like leftovers from copying a different project's `package.json` as a starting point (see Known Issues).
 
 ## Architecture
 
@@ -56,7 +54,7 @@ Browser → Next.js App Router (src/app) ── LandingPage ── ContactFormMo
                                                   MongoDB (Mongoose)   Nodemailer → Gmail
 ```
 
-Everything else in `src/app` (marketing quiz, blog, client showcase, testimonials) renders client-side with no network call, except the newsletter form and the signup page, which call an axios client pointed at `http://localhost:4000/api` — a backend that does not exist inside this repository.
+Everything else in `src/app` (marketing quiz, blog, client showcase, testimonials) renders client-side with no network call, except the newsletter form, which calls an axios client pointed at `http://localhost:4000/api` — a backend that does not exist inside this repository (see Key Features: the newsletter endpoint is broken).
 
 ## Setup Instructions
 
@@ -89,8 +87,11 @@ Open `http://localhost:3000`.
 
 These are things I found in the code that you should be aware of before this is treated as production-ready, rather than things I'm guessing at:
 
-1. **A second, unrelated app is mixed into this repo.** `src/app/roles/page.tsx`, `src/app/[role]/(auth)/signup/page.tsx`, `src/app/oauth-callback/page.tsx`, and `src/components/oAuth/GoogleLoginButton.tsx` implement a healthcare-style role picker (Doctor / Nutritionist / Lab Technician / Admin Staff / Pharmacist) and a patient signup flow ("Sign up to start managing your health journey"), all pointing at routes (`/doctor/login`, `/patient/otp`, `/patient/dashboard`, `http://localhost:4000/auth/google`) that don't exist anywhere in this repo. `oauth-callback/page.tsx`'s real logic is commented out, replaced by a stub that renders the text `page`. Combined with the `package.json` name (`hygieia-frontend`) and self-referential dependency, this strongly suggests these files were carried over from a different, unrelated project and were never wired into Market Craft.
-2. **Newsletter signup is broken** — posts to `/subscribe-newsletter`, which has no corresponding route in this repo (see Tech Stack).
-3. **Stray, unrelated files are committed**: `psges` (an empty, 0-byte file at the repo root) and `public/Student Slips.pdf.crdownload` (a 540 KB incomplete browser download of an unrelated PDF named "Student Slips"). Neither is referenced by any code.
-4. **Unused dependencies** listed in `package.json` (`groq-sdk`, `express`, `cors`, `body-parser`, `react-hook-form`, `zod`) — see Tech Stack for detail.
-5. No `LICENSE` file, no test files, and no CI configuration exist anywhere in this repo.
+1. **Newsletter signup is broken** — posts to `/subscribe-newsletter`, which has no corresponding route in this repo (see Tech Stack).
+2. **Stray, unrelated files are committed**: `psges` (an empty, 0-byte file at the repo root) and `public/Student Slips.pdf.crdownload` (a 540 KB incomplete browser download of an unrelated PDF named "Student Slips"). Neither is referenced by any code.
+3. **Unused dependencies** listed in `package.json` (`groq-sdk`, `express`, `cors`, `body-parser`, `react-hook-form`, `zod`) — see Tech Stack for detail.
+4. No `LICENSE` file, no test files, and no CI configuration exist anywhere in this repo.
+
+## Deployment
+
+Deployed on Vercel: build verified locally (`npm run build`) before pushing.
